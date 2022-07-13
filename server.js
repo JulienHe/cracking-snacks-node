@@ -1,19 +1,51 @@
-'use strict';
-const { sendWhatsapp } = require("./functions/whatsapp");
-
+"use strict";
 const express = require("express");
 const app = express();
-const axios = require("axios");
 require("dotenv").config();
 
+const { sendWhatsapp, sendWhatsappWithMedia } = require("./functions/whatsapp");
+const { getTodaySnack } = require("./graphql/getTodaySnack");
+const { updateTodaySnack } = require("./graphql/updateTodaySnack");
+
 app.get("/", (req, res) => {
-  const today = new Date();
-  const dd = String(today.getDate()).padStart(2, "0");
-  const mm = String(today.getMonth() + 1).padStart(2, "0"); //January is 0!
-  const yyyy = today.getFullYear();
-  sendWhatsapp(`No new snack to be published today! 🙈
+  const checkTodaySnack = async () => {
+    try {
+      const resp = await getTodaySnack();
+      if (resp.data.data.snacks.data.length > 0) {
+        try {
+          const respUpdate = await updateTodaySnack(
+            resp.data.data.snacks.data[0].id
+          );
+          if (respUpdate.data.data.updateSnack) {
+            const snack = respUpdate.data.data.updateSnack.data.attributes;
+            sendWhatsapp(`🍿A new snack review is available! 🍿
+
+${snack.Name} is now visible on the website.
+Do you know this one 👀?
+Visit https://crackingsnacks.com/snack/${snack.Slug} to check it out!
+              
+We wish a good snacking today ❤️!`);
+            console.log(respUpdate.data);
+          } else {
+            sendWhatsapp(`The snack with the ID ${id} did not get published!`);
+            console.log(respUpdate.data);
+          }
+        } catch (err) {
+          console.error(err);
+          res.send(err);
+        }
+      } else {
+        sendWhatsapp(`No new snack to be published today! 🙈
 See you later 🤩!`);
-  res.send(`${yyyy}-${mm}-${dd}`);
+      }
+    } catch (err) {
+      console.log(err);
+      res.send(JSON.stringify(err));
+    }
+  };
+  checkTodaySnack();
+
+  res.send(`Hello hello!`);
 });
 
 // Listen to the App Engine-specified port, or 8080 otherwise
