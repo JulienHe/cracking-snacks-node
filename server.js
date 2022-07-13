@@ -28,7 +28,7 @@ We wish a good snacking today ❤️!`);
             console.log(respUpdate.data);
           } else {
             sendWhatsapp(`The snack with the ID ${id} did not get published!`);
-            console.log(respUpdate.data);
+            console.log(`The snack with the ID ${id} did not get published!`);
           }
         } catch (err) {
           console.error(err);
