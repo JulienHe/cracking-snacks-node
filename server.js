@@ -3,7 +3,7 @@ const express = require("express");
 const app = express();
 require("dotenv").config();
 
-const { sendWhatsapp, sendWhatsappWithMedia } = require("./functions/whatsapp");
+const { sendWhatsapp } = require("./functions/whatsapp");
 const { getTodaySnack } = require("./graphql/getTodaySnack");
 const { updateTodaySnack } = require("./graphql/updateTodaySnack");
 
@@ -18,13 +18,17 @@ app.get("/", (req, res) => {
           );
           if (respUpdate.data.data.updateSnack) {
             const snack = respUpdate.data.data.updateSnack.data.attributes;
-            sendWhatsapp(`🍿A new snack review is available! 🍿
+            const images = snack.Cover.data.attributes.formats.large.url;
+            sendWhatsapp(
+              `🍿 A new snack review is available! 🍿
 
 ${snack.Name} is now visible on the website.
 Do you know this one 👀?
 Visit https://crackingsnacks.com/snack/${snack.Slug} to check it out!
               
-We wish a good snacking today ❤️!`);
+We wish a good snacking today ❤️!`,
+              images
+            );
             console.log(respUpdate.data);
           } else {
             sendWhatsapp(`The snack with the ID ${id} did not get published!`);
@@ -32,7 +36,6 @@ We wish a good snacking today ❤️!`);
           }
         } catch (err) {
           console.error(err);
-          res.send(err);
         }
       } else {
         sendWhatsapp(`No new snack to be published today! 🙈
@@ -40,7 +43,6 @@ See you later 🤩!`);
       }
     } catch (err) {
       console.log(err);
-      res.send(JSON.stringify(err));
     }
   };
   checkTodaySnack();
@@ -51,5 +53,20 @@ See you later 🤩!`);
 // Listen to the App Engine-specified port, or 8080 otherwise
 const PORT = process.env.PORT || 4343;
 app.listen(PORT, () => {
+  console.log(
+    `  .aMMMb  dMMMMb  .aMMMb  .aMMMb  dMP dMP dMP dMMMMb  .aMMMMP        .dMMMb  dMMMMb  .aMMMb  .aMMMb  dMP dMP .dMMMb `
+  );
+  console.log(
+    `  dMP"VMP dMP.dMP dMP"dMP dMP"VMP dMP.dMP amr dMP dMP dMP"           dMP" VP dMP dMP dMP"dMP dMP"VMP dMP.dMP dMP" VP `
+  );
+  console.log(
+    ` dMP     dMMMMK" dMMMMMP dMP     dMMMMK" dMP dMP dMP dMP MMP"        VMMMb  dMP dMP dMMMMMP dMP     dMMMMK"  VMMMb   `
+  );
+  console.log(
+    `dMP.aMP dMP"AMF dMP dMP dMP.aMP dMP"AMF dMP dMP dMP dMP.dMP        dP .dMP dMP dMP dMP dMP dMP.aMP dMP"AMF dP .dMP   `
+  );
+  console.log(
+    `VMMMP" dMP dMP dMP dMP  VMMMP" dMP dMP dMP dMP dMP  VMMMP"         VMMMP" dMP dMP dMP dMP  VMMMP" dMP dMP  VMMMP"    `
+  );
   console.log(`Server listening on port ${PORT}...`);
 });
