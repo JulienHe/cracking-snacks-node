@@ -19,12 +19,15 @@ app.get("/", (req, res) => {
           if (respUpdate.data.data.updateSnack) {
             const snack = respUpdate.data.data.updateSnack.data.attributes;
             const images = snack.Cover.data.attributes.formats.large.url;
+            const url = req.query.igpost
+              ? req.query.igpost
+              : `https://crackingsnacks.com/snack/${snack.Slug}`;
             sendWhatsapp(
               `🍿A new snack review is available! 🍿
 
 ${snack.Name} is now visible on the website.
 Do you know this one 👀?
-Visit https://crackingsnacks.com/snack/${snack.Slug} to check it out!
+Visit ${url} to check it out!
               
 We wish a good snacking today ❤️!`,
               images
