@@ -20,7 +20,7 @@ app.get("/", (req, res) => {
             const snack = respUpdate.data.data.updateSnack.data.attributes;
             const images = snack.Cover.data.attributes.formats.large.url;
             sendWhatsapp(
-              `🍿 A new snack review is available! 🍿
+              `🍿A new snack review is available! 🍿
 
 ${snack.Name} is now visible on the website.
 Do you know this one 👀?
