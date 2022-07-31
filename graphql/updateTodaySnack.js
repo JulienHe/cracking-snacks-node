@@ -10,7 +10,7 @@ const updateTodaySnack = async (id) => {
                         Name
                         publishedAt
                         Slug
-                        Cover {
+                        whatsapp_cover {
                             data {
                                 attributes {
                                     formats
