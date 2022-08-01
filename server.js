@@ -20,8 +20,6 @@ app.get("/", (req, res) => {
             const snack = respUpdate.data.data.updateSnack.data.attributes;
             const images =
               snack.whatsapp_cover.data.attributes.formats.large.url;
-            // const images =
-            //   "https://assets.crackingsnacks.com/hazel_67204d7d63/hazel_67204d7d63.jpg";
             const url = req.query.igpost
               ? req.query.igpost
               : `https://crackingsnacks.com/snack/${snack.Slug}`;
