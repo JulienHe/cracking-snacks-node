@@ -5,12 +5,16 @@ require("dotenv").config();
 
 const { sendWhatsapp } = require("./functions/whatsapp");
 const { getTodaySnack } = require("./graphql/getTodaySnack");
+const { getWhatsappPhones } = require("./graphql/getWhatsappNumber");
 const { updateTodaySnack } = require("./graphql/updateTodaySnack");
+const { encrypt, decrypt } = require("./functions/cypher");
 
 app.get("/", (req, res) => {
   const checkTodaySnack = async () => {
     try {
       const resp = await getTodaySnack();
+      const phones = await getWhatsappPhones();
+      console.log(phones.data.data.whatsappPhones.data);
       if (resp.data.data.snacks.data.length > 0) {
         try {
           const respUpdate = await updateTodaySnack(
@@ -23,7 +27,6 @@ app.get("/", (req, res) => {
             const url = req.query.igpost
               ? req.query.igpost
               : `https://crackingsnacks.com/snack/${snack.Slug}`;
-            console.log(url);
             sendWhatsapp(
               `🍿A new snack review is available! 🍿
 
@@ -55,6 +58,14 @@ See you later 🤩!`);
   res.send(`Hello hello!`);
 });
 
+app.get("/cypher/encrypt", (req, res) => {
+  res.send(encrypt(req.query.phone));
+});
+
+app.get("/cypher/decrypt", (req, res) => {
+  res.send(decrypt(req.query.phone));
+});
+
 // Listen to the App Engine-specified port, or 8080 otherwise
 const PORT = process.env.PORT || 4343;
 app.listen(PORT, () => {
@@ -74,4 +85,5 @@ app.listen(PORT, () => {
     `VMMMP" dMP dMP dMP dMP  VMMMP" dMP dMP dMP dMP dMP  VMMMP"         VMMMP" dMP dMP dMP dMP  VMMMP" dMP dMP  VMMMP"    `
   );
   console.log(`Server listening on port ${PORT}...`);
+  console.log(process.env);
 });
