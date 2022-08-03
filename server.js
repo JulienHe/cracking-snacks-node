@@ -85,5 +85,4 @@ app.listen(PORT, () => {
     `VMMMP" dMP dMP dMP dMP  VMMMP" dMP dMP dMP dMP dMP  VMMMP"         VMMMP" dMP dMP dMP dMP  VMMMP" dMP dMP  VMMMP"    `
   );
   console.log(`Server listening on port ${PORT}...`);
-  console.log(process.env);
 });
