@@ -14,33 +14,37 @@ app.get("/", (req, res) => {
     try {
       const resp = await getTodaySnack();
       const phones = await getWhatsappPhones();
-      console.log(phones.data.data.whatsappPhones.data);
+      const phonesArray = phones.data.data.whatsappPhones.data;
       if (resp.data.data.snacks.data.length > 0) {
         try {
           const respUpdate = await updateTodaySnack(
             resp.data.data.snacks.data[0].id
           );
           if (respUpdate.data.data.updateSnack) {
+            console.log("Got the update snack");
             const snack = respUpdate.data.data.updateSnack.data.attributes;
             const images =
               snack.whatsapp_cover.data.attributes.formats.large.url;
             const url = req.query.igpost
               ? req.query.igpost
               : `https://crackingsnacks.com/snack/${snack.Slug}`;
-            sendWhatsapp(
-              `🍿A new snack review is available! 🍿
+            phonesArray.forEach((element) =>
+              sendWhatsapp(
+                `🍿A new snack review is available! 🍿
 
 ${snack.Name} is now visible on the website.
 Do you know this one 👀?
 Visit ${url} to check it out!
               
 We wish a good snacking today ❤️!`,
-              images
+                images,
+                decrypt(element.attributes.PhoneNumber)
+              )
             );
-            console.log(respUpdate.data);
+            res.send("Message sent");
           } else {
             sendWhatsapp(`The snack with the ID ${id} did not get published!`);
-            console.log(`The snack with the ID ${id} did not get published!`);
+            res.send(`The snack with the ID ${id} did not get published!`);
           }
         } catch (err) {
           console.error(err);
@@ -48,14 +52,13 @@ We wish a good snacking today ❤️!`,
       } else {
         sendWhatsapp(`No new snack to be published today! 🙈
 See you later 🤩!`);
+        res.send("No Snack today");
       }
     } catch (err) {
       console.log(err);
     }
   };
   checkTodaySnack();
-
-  res.send(`Hello hello!`);
 });
 
 app.get("/cypher/encrypt", (req, res) => {
