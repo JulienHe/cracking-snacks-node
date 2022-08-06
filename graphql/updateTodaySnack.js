@@ -3,7 +3,6 @@ const axios = require("axios");
 
 const updateTodaySnack = async (id) => {
   const secrets = await doppler.getSecrets();
-  console.log(secrets);
   const today = new Date();
   const postPublication = JSON.stringify({
     query: `mutation updatePublicationState($id: ID!, $data: SnackInput!) {
@@ -37,11 +36,7 @@ const updateTodaySnack = async (id) => {
     data: postPublication,
   };
 
-  console.log(configUpdatePublication);
-
   const resp = await axios(configUpdatePublication);
-
-  console.log(resp.data.data.updateSnack);
 
   return resp;
 };
