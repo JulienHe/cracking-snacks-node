@@ -1,6 +1,8 @@
+const doppler = require("../doppler-widget.js");
 const axios = require("axios");
 
 const updateTodaySnack = async (id) => {
+  const secrets = await doppler.getSecrets();
   const today = new Date();
   const postPublication = JSON.stringify({
     query: `mutation updatePublicationState($id: ID!, $data: SnackInput!) {
@@ -26,9 +28,9 @@ const updateTodaySnack = async (id) => {
 
   const configUpdatePublication = {
     method: "post",
-    url: `${process.env.GRAPHQL_API_URL}`,
+    url: `${secrets.GRAPHQL_API_URL}`,
     headers: {
-      Authorization: `Bearer ${process.env.BEARER_TOKEN}`,
+      Authorization: `Bearer ${secrets.BEARER_TOKEN}`,
       "Content-Type": "application/json",
     },
     data: postPublication,

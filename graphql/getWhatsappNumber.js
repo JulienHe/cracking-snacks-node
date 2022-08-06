@@ -1,10 +1,16 @@
+const doppler = require("../doppler-widget.js");
 const axios = require("axios");
 const { getToday } = require("../functions/date");
 
 const getWhatsappPhones = async () => {
+  const secrets = await doppler.getSecrets();
   const getPhones = JSON.stringify({
     query: `  query getWhatsappPhone {
-        whatsappPhones(pagination: { page: 1, pageSize: 100 }, sort: "createdAt:desc") {
+      whatsappPhones(
+        pagination: { page: 1, pageSize: 100 }
+        sort: "createdAt:desc"
+        filters: { Registered: { eq: true } }
+        ) {
           data {
             attributes {
               Name
@@ -19,7 +25,7 @@ const getWhatsappPhones = async () => {
 
   const configGetPhones = {
     method: "post",
-    url: `${process.env.GRAPHQL_API_URL}`,
+    url: `${secrets.GRAPHQL_API_URL}`,
     headers: {
       "Content-Type": "application/json",
     },

@@ -1,12 +1,17 @@
 require("dotenv").config();
+
+const secrets = JSON.parse(
+  require("child_process").execSync("node ./doppler-widget.js")
+);
+
 const client = require("twilio")(
-  process.env.TWILIO_ACCOUNT_SID,
-  process.env.TWILIO_AUTH_TOKEN
+  secrets.TWILIO_ACCOUNT_SID,
+  secrets.TWILIO_AUTH_TOKEN
 );
 
 function sendWhatsapp(theMessage, mediaUrl = null, phone = null) {
   const whatsappContent = {};
-  whatsappContent.from = `whatsapp:${process.env.WHATSAPP_PHONE_NUMBER}`;
+  whatsappContent.from = `whatsapp:${secrets.WHATSAPP_PHONE_NUMBER}`;
   whatsappContent.to = [`whatsapp:+${phone}`];
   whatsappContent.body = theMessage;
   if (mediaUrl) {

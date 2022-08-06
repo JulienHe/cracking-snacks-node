@@ -1,73 +1,17 @@
 "use strict";
 const express = require("express");
 const app = express();
+const router = express.Router();
 require("dotenv").config();
 
-const { sendWhatsapp } = require("./functions/whatsapp");
-const { getTodaySnack } = require("./graphql/getTodaySnack");
-const { getWhatsappPhones } = require("./graphql/getWhatsappNumber");
-const { updateTodaySnack } = require("./graphql/updateTodaySnack");
-const { encrypt, decrypt } = require("./functions/cypher");
+const { todaySnack } = require("./routes/index.js");
+const { encrypt, decrypt } = require("./routes/cypher/index.js");
 
-app.get("/", (req, res) => {
-  const checkTodaySnack = async () => {
-    try {
-      const resp = await getTodaySnack();
-      const phones = await getWhatsappPhones();
-      const phonesArray = phones.data.data.whatsappPhones.data;
-      if (resp.data.data.snacks.data.length > 0) {
-        try {
-          const respUpdate = await updateTodaySnack(
-            resp.data.data.snacks.data[0].id
-          );
-          if (respUpdate.data.data.updateSnack) {
-            console.log("Got the update snack");
-            const snack = respUpdate.data.data.updateSnack.data.attributes;
-            const images =
-              snack.whatsapp_cover.data.attributes.formats.large.url;
-            const url = req.query.igpost
-              ? req.query.igpost
-              : `https://crackingsnacks.com/snack/${snack.Slug}`;
-            phonesArray.forEach((element) =>
-              sendWhatsapp(
-                `🍿A new snack review is available! 🍿
+router.get("/", todaySnack);
+router.get("/cypher/encrypt", encrypt);
+router.get("/cypher/decrypt", decrypt);
 
-${snack.Name} is now visible on the website.
-Do you know this one 👀?
-Visit ${url} to check it out!
-              
-We wish a good snacking today ❤️!`,
-                images,
-                decrypt(element.attributes.PhoneNumber)
-              )
-            );
-            res.send("Message sent");
-          } else {
-            sendWhatsapp(`The snack with the ID ${id} did not get published!`);
-            res.send(`The snack with the ID ${id} did not get published!`);
-          }
-        } catch (err) {
-          console.error(err);
-        }
-      } else {
-        sendWhatsapp(`No new snack to be published today! 🙈
-See you later 🤩!`);
-        res.send("No Snack today");
-      }
-    } catch (err) {
-      console.log(err);
-    }
-  };
-  checkTodaySnack();
-});
-
-app.get("/cypher/encrypt", (req, res) => {
-  res.send(encrypt(req.query.phone));
-});
-
-app.get("/cypher/decrypt", (req, res) => {
-  res.send(decrypt(req.query.phone));
-});
+app.use(router);
 
 // Listen to the App Engine-specified port, or 8080 otherwise
 const PORT = process.env.PORT || 4343;
