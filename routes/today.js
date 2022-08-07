@@ -31,7 +31,7 @@ Visit ${url} to check it out!
                 
 We wish a good snacking today ❤️!`,
               images,
-              phone
+              `whatsapp:+${phone}`
             );
           });
           res.send("Message sent");

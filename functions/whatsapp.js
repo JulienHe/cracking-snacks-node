@@ -12,7 +12,7 @@ const client = require("twilio")(
 function sendWhatsapp(theMessage, mediaUrl = null, phone = null) {
   const whatsappContent = {};
   whatsappContent.from = `whatsapp:${secrets.WHATSAPP_PHONE_NUMBER}`;
-  whatsappContent.to = [`whatsapp:+${phone}`];
+  whatsappContent.to = [`${phone}`];
   whatsappContent.body = theMessage;
   if (mediaUrl) {
     whatsappContent.mediaUrl = mediaUrl;
