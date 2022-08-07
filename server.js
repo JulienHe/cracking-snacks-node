@@ -1,5 +1,7 @@
 "use strict";
 const express = require("express");
+const Sentry = require("@sentry/node");
+const Tracing = require("@sentry/tracing");
 const app = express();
 const router = express.Router();
 require("dotenv").config();
@@ -10,8 +12,33 @@ const { encrypt, decrypt } = require("./routes/cypher/index.js");
 router.get("/", todaySnack);
 router.get("/cypher/encrypt", encrypt);
 router.get("/cypher/decrypt", decrypt);
+router.get("/debug-sentry", function mainHandler(req, res) {
+  throw new Error("My first Sentry error!");
+});
+
+Sentry.init({
+  dsn: "https://4cd2875e295045649e9daadd2801da87@o1350322.ingest.sentry.io/6630097",
+  integrations: [
+    new Sentry.Integrations.Http({ tracing: true }),
+    new Tracing.Integrations.Express({ app }),
+  ],
+
+  tracesSampleRate: 1.0,
+});
+
+console.log(process.env.NODE_ENV);
+
+app.use(Sentry.Handlers.requestHandler());
+app.use(Sentry.Handlers.tracingHandler());
 
 app.use(router);
+
+app.use(Sentry.Handlers.errorHandler());
+
+app.use(function onError(err, req, res, next) {
+  res.statusCode = 500;
+  res.end(res.sentry + "\n");
+});
 
 // Listen to the App Engine-specified port, or 8080 otherwise
 const PORT = process.env.PORT || 4343;

@@ -6,13 +6,15 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server.js",
-    "dev": "nodemon server.js",
+    "dev": "set NODE_ENV=development&& nodemon server.js",
     "deploy": "gcloud run deploy cracking-snacks-node --source . --region europe-west1",
     "deployWithKeys": "gcloud run deploy cracking-snacks-node --source . --region europe-west1 --set-secrets=KEY_WHATSAPP_CRYPTO=cracking-snacks-whatsapp-crypto:latest,TWILIO_ACCOUNT_SID=cracking-snacks-twilio-sid:latest,TWILIO_AUTH_TOKEN=cracking-snacks-twilio-auth:latest,BEARER_TOKEN=bearer-crackin-snack-api:latest"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@sentry/node": "^7.9.0",
+    "@sentry/tracing": "^7.9.0",
     "axios": "^0.27.2",
     "crypto-js": "^4.1.1",
     "dotenv": "^16.0.1",
@@ -20,6 +22,7 @@
     "twilio": "^3.78.0"
   },
   "devDependencies": {
+    "cross-env": "^7.0.3",
     "nodemon": "^2.0.19"
   }
 }
