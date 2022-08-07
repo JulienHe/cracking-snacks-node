@@ -6,10 +6,12 @@ const app = express();
 const router = express.Router();
 require("dotenv").config();
 
-const { todaySnack } = require("./routes/index.js");
+const { home } = require("./routes/index.js");
+const { todaySnack } = require("./routes/today.js");
 const { encrypt, decrypt } = require("./routes/cypher/index.js");
 
-router.get("/", todaySnack);
+router.get("/", home);
+router.get("/todaySnack", todaySnack);
 router.get("/cypher/encrypt", encrypt);
 router.get("/cypher/decrypt", decrypt);
 router.get("/debug-sentry", function mainHandler(req, res) {
@@ -22,11 +24,10 @@ Sentry.init({
     new Sentry.Integrations.Http({ tracing: true }),
     new Tracing.Integrations.Express({ app }),
   ],
+  environment: process.env.NODE_ENV,
 
   tracesSampleRate: 1.0,
 });
-
-console.log(process.env.NODE_ENV);
 
 app.use(Sentry.Handlers.requestHandler());
 app.use(Sentry.Handlers.tracingHandler());
