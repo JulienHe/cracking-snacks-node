@@ -44,7 +44,11 @@ We wish a good snacking today ❤️!`,
               `whatsapp:+${phone}`
             );
           });
-          res.send("Message sent");
+          if (res) {
+            res.send("Message sent");
+          } else {
+            console.log("Message sent");
+          }
         } else {
           sendWhatsapp(`The snack with the ID ${id} did not get published!`);
           res.send(`The snack with the ID ${id} did not get published!`);
