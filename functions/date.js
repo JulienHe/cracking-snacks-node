@@ -7,4 +7,10 @@ function getToday() {
   return `${yyyy}-${mm}-${dd}`;
 }
 
-module.exports = { getToday };
+function isToday(dateOne, dateTwo) {
+  const dateOneString = new Date(dateOne.replace(/-/g, "/")).toDateString();
+  const dateTwoString = new Date(dateTwo).toDateString();
+  return dateOneString === dateTwoString;
+}
+
+module.exports = { getToday, isToday };

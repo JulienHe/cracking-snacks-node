@@ -6,12 +6,16 @@ const getTodaySnack = async () => {
   const secrets = await doppler.getSecrets();
   const getPublication = JSON.stringify({
     query: `query getSnacks($date: Date) {
-              snacks(publicationState: PREVIEW, filters: { publish_at: { eq: $date } }) {
-                  data {
-                      id
-                  }
-              }
-          }`,
+      snacks(publicationState: PREVIEW, filters: { publish_at: { eq: $date } }) {
+        data {
+          id
+          attributes {
+            Name
+            publish_at
+          }
+        }
+      }
+    }`,
     variables: { date: getToday() },
   });
 
@@ -25,7 +29,7 @@ const getTodaySnack = async () => {
   };
 
   const resp = await axios(configGetPublication);
-
+  
   return resp;
 };
 

@@ -9,12 +9,14 @@ require("dotenv").config();
 const { home } = require("./routes/index.js");
 const { todaySnack } = require("./routes/today.js");
 const { snackWithMedia } = require("./routes/dummy/snack.js");
+const { getTodayPost } = require("./routes/instagram/scrap.js");
 const { whatsAppReply } = require("./routes/whatsapp/conversation.js");
 const { encrypt, decrypt } = require("./routes/cypher/index.js");
 
 router.get("/", home);
 router.get("/todaySnack", todaySnack);
 router.get("/dummy/snack", snackWithMedia);
+router.get("/instagram/scrap", getTodayPost);
 router.get("/whatsapp/conversation", whatsAppReply);
 router.get("/cypher/encrypt", encrypt);
 router.get("/cypher/decrypt", decrypt);
