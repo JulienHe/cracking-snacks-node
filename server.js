@@ -42,7 +42,7 @@ app.use(Sentry.Handlers.tracingHandler());
 app.use(router);
 
 const job = cron.schedule(
-  "20 9 0 * * *",
+  "20 9 0 * *",
   () => {
     console.log("Running Instagram post job");
     todaySnack();
