@@ -2,6 +2,7 @@
 const express = require("express");
 const Sentry = require("@sentry/node");
 const Tracing = require("@sentry/tracing");
+const cron = require("node-cron");
 const app = express();
 const router = express.Router();
 require("dotenv").config();
@@ -39,6 +40,16 @@ app.use(Sentry.Handlers.requestHandler());
 app.use(Sentry.Handlers.tracingHandler());
 
 app.use(router);
+
+const job = cron.schedule(
+  "*/10 * * * * *",
+  () => {
+    console.log("running a task every second");
+  },
+  { timezone: "America/Montreal" }
+);
+
+job.start();
 
 app.use(Sentry.Handlers.errorHandler());
 

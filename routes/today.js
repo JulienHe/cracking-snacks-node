@@ -17,7 +17,10 @@ const todaySnack = async (req, res) => {
     if (resp.data.data.snacks.data.length > 0) {
       const todaySnack = resp.data.data.snacks.data[0];
       try {
-        const respUpdate = await updateTodaySnack(todaySnack.id);
+        const respUpdate = await updateTodaySnack(
+          todaySnack.id,
+          igpost.permalink
+        );
         const igPostSnackPostSameDay = isToday(
           todaySnack.attributes.publish_at,
           igpost.timestamp

@@ -1,7 +1,7 @@
 const doppler = require("../doppler-widget.js");
 const axios = require("axios");
 
-const updateTodaySnack = async (id) => {
+const updateTodaySnack = async (id, instagram_permalink) => {
   const secrets = await doppler.getSecrets();
   const today = new Date();
   const postPublication = JSON.stringify({
@@ -23,7 +23,13 @@ const updateTodaySnack = async (id) => {
                 }
             }
         }`,
-    variables: { data: { publishedAt: `${today.toISOString()}` }, id: `${id}` },
+    variables: {
+      data: {
+        publishedAt: `${today.toISOString()}`,
+        instagram_post: `${instagram_permalink}`,
+      },
+      id: `${id}`,
+    },
   });
 
   const configUpdatePublication = {
