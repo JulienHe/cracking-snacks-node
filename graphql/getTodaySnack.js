@@ -11,6 +11,7 @@ const getTodaySnack = async () => {
           id
           attributes {
             Name
+            Calories
             publish_at
           }
         }
